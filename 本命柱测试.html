@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>测测你的本命柱</title>
+  <style>
+    :root {
+      --bg: #f7f3ee;
+      --card: #fffaf5;
+      --text: #5b5650;
+      --muted: #9a9188;
+      --primary: #c9b8a3;
+      --primary-dark: #a98f76;
+      --accent: #d8c7b8;
+      --soft: #efe6dc;
+      --white: #ffffff;
+      --shadow: 0 8px 24px rgba(120, 100, 80, 0.08);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 18px 16px 28px;
+      background: var(--bg);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(247, 243, 238, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 12px 4px 10px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 20px;
+      margin-top: 16px;
+    }
+
+    .hero {
+      text-align: center;
+      padding-top: 28px;
+      padding-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--soft);
+      color: var(--primary-dark);
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin: 0 0 10px;
+      color: #4f4942;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      margin: 0 auto 20px;
+      max-width: 320px;
+    }
+
+    .desc {
+      font-size: 14px;
+      color: #7b736a;
+      background: #fff;
+      border: 1px solid #f0e7dd;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 22px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-size: 16px;
+      background: var(--primary);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 16px rgba(169, 143, 118, 0.18);
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--primary-dark);
+      border: 1px solid #e7dccd;
+      box-shadow: none;
+      margin-top: 10px;
+    }
+
+    .progress-wrap {
+      margin: 8px 0 18px;
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      height: 8px;
+      background: #eee4d9;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #d8c7b8, #c9b8a3);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .question-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 18px;
+      color: #4f4942;
+    }
+
+    .option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 1px solid #eee2d5;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .option:hover {
+      border-color: #d8c7b8;
+      background: #fffaf6;
+    }
+
+    .option.selected {
+      border-color: var(--primary-dark);
+      background: #f7efe7;
+    }
+
+    .result-tag {
+      display: inline-block;
+      background: var(--soft);
+      color: var(--primary-dark);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .result-name {
+      font-size: 26px;
+      margin: 0 0 8px;
+      color: #4f4942;
+    }
+
+    .keywords {
+      font-size: 14px;
+      color: var(--primary-dark);
+      margin-bottom: 18px;
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid #f0e7dd;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .section h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #6d6258;
+    }
+
+    .section p {
+      margin: 0;
+      font-size: 14px;
+      color: #7b736a;
+    }
+
+    .share-line {
+      background: #f8f1ea;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      color: #6f5f50;
+      font-size: 15px;
+      margin: 16px 0 18px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: #b0a79d;
+      margin-top: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (min-width: 481px) {
+      body {
+        background: #f1ece6;
+      }
+      .page {
+        box-shadow: 0 0 0 1px rgba(0,0,0,0.02);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">测测你的本命柱｜你最适合在鬼灭世界里成为谁？</div>
+
+    <!-- 封面页 -->
+    <section id="cover" class="card hero">
+      <div class="badge">鬼灭之刃 · 性格测试</div>
+      <h1>测测你的本命柱</h1>
+      <p class="subtitle">10道生活小题，看看你在鬼灭世界里，最像哪一位柱。</p>
+
+      <div class="desc">
+        这不是战力测试，更像是一次性格侧写。<br><br>
+        你会是温柔坚定的水，还是热烈耀眼的炎？<br>
+        是细腻有锋芒的虫，还是自由干净的霞？<br><br>
+        凭直觉作答就好，答案没有对错。
+      </div>
+
+      <button class="btn" onclick="startQuiz()">开始测试</button>
+      <div class="footer-note">适合截图分享 · 小红书清新简约风</div>
+    </section>
+
+    <!-- 答题页 -->
+    <section id="quiz" class="card hidden">
+      <div class="progress-wrap">
+        <div class="progress-text">
+          <span id="progressLabel">第 1/10 题</span>
+          <span id="progressPercent">10%</span>
+        </div>
+        <div class="progress">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </div>
+
+      <h2 id="questionTitle" class="question-title"></h2>
+      <div id="optionsBox"></div>
+    </section>
+
+    <!-- 结果页 -->
+    <section id="result" class="card hidden">
+      <div style="text-align:center;">
+        <div class="result-tag">你的测试结果是</div>
+        <h2 id="resultName" class="result-name"></h2>
+        <div id="resultKeywords" class="keywords"></div>
+      </div>
+
+      <div class="section">
+        <h3>你在鬼灭里的样子</h3>
+        <p id="resultDesc"></p>
+      </div>
+
+      <div class="section">
+        <h3>你的优势</h3>
+        <p id="resultStrength"></p>
+      </div>
+
+      <div class="section">
+        <h3>你的小缺点</h3>
+        <p id="resultWeakness"></p>
+      </div>
+
+      <div class="section">
+        <h3>你适合并肩作战的人</h3>
+        <p id="resultPartner"></p>
+      </div>
+
+      <div id="shareLine" class="share-line"></div>
+
+      <button class="btn" onclick="restartQuiz()">重新测试</button>
+      <button class="btn secondary" onclick="copyResult()">复制我的结果</button>
+
+      <div class="footer-note">结果仅供娱乐与分享</div>
+    </section>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        title: "如果突然进入一个危险未知的世界，你第一反应更像是：",
+        options: [
+          { text: "先冷静下来，观察局势，再找最优解", scores: { water: 2, snake: 1 } },
+          { text: "立刻站到重要的人前面，先保护再说", scores: { flame: 2, wind: 1 } },
+          { text: "表面镇定，其实脑子已经转得飞快", scores: { insect: 2, mist: 1 } },
+          { text: "先凭直觉行动，边走边判断", scores: { love: 2, sound: 1 } }
+        ]
+      },
+      {
+        title: "你平时更像哪种状态？",
+        options: [
+          { text: "安静内敛，不太主动表达自己", scores: { water: 2, mist: 1 } },
+          { text: "温暖可靠，身边人很容易信任你", scores: { flame: 2, love: 1 } },
+          { text: "敏感细腻，能察觉别人情绪变化", scores: { insect: 2, snake: 1 } },
+          { text: "直接坦率，不太喜欢绕弯子", scores: { wind: 2, sound: 1 } }
+        ]
+      },
+      {
+        title: "面对压力时，你通常会：",
+        options: [
+          { text: "自己消化，不轻易麻烦别人", scores: { water: 2, snake: 1 } },
+          { text: "咬牙坚持，觉得扛过去就好了", scores: { flame: 2, wind: 1 } },
+          { text: "越紧张越清醒，甚至有点狠劲", scores: { insect: 2, sound: 1 } },
+          { text: "情绪波动大，但恢复也快", scores: { love: 2, mist: 1 } }
+        ]
+      },
+      {
+        title: "你最看重哪种品质？",
+        options: [
+          { text: "温柔但有原则", scores: { water: 2, insect: 1 } },
+          { text: "强大又让人安心", scores: { flame: 2, wind: 1 } },
+          { text: "清醒、聪明、有分寸", scores: { mist: 2, snake: 1 } },
+          { text: "真诚、热烈、不掩饰", scores: { love: 2, sound: 1 } }
+        ]
+      },
+      {
+        title: "在团队里，你更常扮演的角色是：",
+        options: [
+          { text: "稳定军心的人", scores: { water: 2, flame: 1 } },
+          { text: "冲在最前面的人", scores: { wind: 2, sound: 1 } },
+          { text: "观察细节、补位的人", scores: { insect: 2, mist: 1 } },
+          { text: "活跃气氛、带动大家的人", scores: { love: 2, snake: 1 } }
+        ]
+      },
+      {
+        title: "你更喜欢哪种生活节奏？",
+        options: [
+          { text: "平稳、有秩序、别太多意外", scores: { water: 2, insect: 1 } },
+          { text: "有目标、有挑战，越难越想试试", scores: { flame: 2, wind: 1 } },
+          { text: "自由一点，不想被安排得太死", scores: { mist: 2, sound: 1 } },
+          { text: "跟着感觉走，舒服最重要", scores: { love: 2, snake: 1 } }
+        ]
+      },
+      {
+        title: "如果朋友难过，你更可能会：",
+        options: [
+          { text: "安静陪着，不一定说很多", scores: { water: 2, mist: 1 } },
+          { text: "认真开导，帮对方理清问题", scores: { insect: 2, flame: 1 } },
+          { text: "用轻松方式逗对方开心", scores: { love: 2, sound: 1 } },
+          { text: "直接问：“谁让你不舒服了？”", scores: { wind: 2, snake: 1 } }
+        ]
+      },
+      {
+        title: "你更容易被哪种人吸引？",
+        options: [
+          { text: "外表冷淡、内心柔软的人", scores: { water: 2, snake: 1 } },
+          { text: "坚定可靠、很有担当的人", scores: { flame: 2, wind: 1 } },
+          { text: "温柔细腻、情商很高的人", scores: { insect: 2, love: 1 } },
+          { text: "反差感强、真实鲜活的人", scores: { mist: 2, sound: 1 } }
+        ]
+      },
+      {
+        title: "你内心深处最害怕的是：",
+        options: [
+          { text: "自己不够强，保护不了重要的人", scores: { flame: 2, wind: 1 } },
+          { text: "被误解，却不知道怎么解释", scores: { water: 2, insect: 1 } },
+          { text: "失去自我，被环境磨平棱角", scores: { mist: 2, snake: 1 } },
+          { text: "孤独太久，没人真正懂自己", scores: { love: 2, sound: 1 } }
+        ]
+      },
+      {
+        title: "如果给自己选一句人生信条，你更倾向：",
+        options: [
+          { text: "温柔不是软弱，是选择", scores: { water: 2, insect: 1 } },
+          { text: "只要还在坚持，就没有输", scores: { flame: 2, wind: 1 } },
+          { text: "看清世界之后，依然保持自己", scores: { mist: 2, snake: 1 } },
+          { text: "活在当下，热烈而真诚地活", scores: { love: 2, sound: 1 } }
+        ]
+      }
+    ];
+
+    const results = {
+      water: {
+        name: "水柱型人格",
+        keywords: "安静 · 克制 · 温柔 · 责任感强",
+        desc: "你在鬼灭世界里，是那种看起来话不多、却一直把责任扛在肩上的人。你不是没有情绪，只是更习惯先处理问题，再处理自己。你身上有一种很特别的安定感，别人可能会觉得你有点距离感，但真正靠近之后，会发现你其实非常柔软。",
+        strength: "你很可靠，也很能共情。你不会轻易许诺，但一旦答应了，就会认真做到。",
+        weakness: "有时候太习惯独自消化情绪，容易让别人误以为你不需要被关心。",
+        partner: "适合和热烈、直接、愿意把话说开的人同行。对方能把你从沉默里拉出来，而你也能让对方变得更稳。",
+        share: "你不是冷漠，只是把温柔藏得很深。"
+      },
+      flame: {
+        name: "炎柱型人格",
+        keywords: "热烈 · 坚定 · 坦荡 · 保护欲强",
+        desc: "你在鬼灭世界里，是那种一出现就会让人觉得“有救了”的人。你不太擅长退缩，也不太喜欢逃避。你相信只要心里那口气还在，就一定能继续往前走。你身上的能量很强，身边的人很容易被你感染。",
+        strength: "你很有担当，也很有感染力。你不是不会害怕，而是即使害怕，也会先站出来。",
+        weakness: "有时候太习惯燃烧自己，容易忽略自己其实也需要休息。",
+        partner: "适合和温柔细腻、能察觉你疲惫的人同行。对方未必比你强，但会让你觉得安心。",
+        share: "你像火一样明亮，也别忘了照亮自己。"
+      },
+      insect: {
+        name: "虫柱型人格",
+        keywords: "细腻 · 聪明 · 温柔有锋芒",
+        desc: "你在鬼灭世界里，是那种看起来很温和，实际上非常有分寸和力量的人。你擅长观察，也很懂得照顾别人的感受。但你并不是一味退让的人，你有自己的底线，而且一旦触碰，你会非常坚定。",
+        strength: "你情商高，洞察力强，能在复杂关系里保持清醒。你懂得用温和的方式，表达自己真正想坚持的东西。",
+        weakness: "有时会把真实情绪藏得太好，让人很难真正走进你心里。",
+        partner: "适合和真诚、直接、不会随意试探你的人同行。你不需要被过度解读，只需要被认真理解。",
+        share: "你的温柔，从来不是没有脾气。"
+      },
+      mist: {
+        name: "霞柱型人格",
+        keywords: "纯粹 · 直觉 · 干净 · 自由感",
+        desc: "你在鬼灭世界里，是那种看起来有点飘忽、其实内心很纯粹的人。你不太喜欢复杂的人情世故，也不太愿意被太多规则束缚。你更相信自己的感觉，也更想按照自己认可的方式生活。",
+        strength: "你直觉敏锐，心思干净，常常能一眼看清本质。你不虚伪，也不喜欢装，和你相处会有一种难得的轻松感。",
+        weakness: "有时会因为太凭感觉做事，而忽略现实层面的安排。",
+        partner: "适合和稳定、耐心、愿意给你空间的人同行。对方不会强迫你改变，而是陪你慢慢找到自己的节奏。",
+        share: "你不是迷糊，只是更相信心里的答案。"
+      },
+      love: {
+        name: "恋柱型人格",
+        keywords: "真诚 · 热烈 · 共情力强 · 可爱又有力量",
+        desc: "你在鬼灭世界里，是那种很容易让人喜欢、也很容易真心喜欢别人的人。你对感情很认真，对世界也保留着一份柔软。你不是脆弱，而是即使见过复杂，依然愿意真诚待人。",
+        strength: "你很有共情力，也很会表达喜欢。你能让身边的人感到被重视、被接住。",
+        weakness: "有时太容易在意别人的评价，容易因为一点小事怀疑自己。",
+        partner: "适合和坚定、稳定、能给你明确回应的人同行。你不需要轰轰烈烈，只需要被坚定地选择。",
+        share: "你的喜欢很珍贵，要留给懂得珍惜的人。"
+      },
+      wind: {
+        name: "风柱型人格",
+        keywords: "直接 · 护短 · 反差感 · 行动派",
+        desc: "你在鬼灭世界里，是那种看起来不太好惹、实际上特别护短的人。你不太会讲漂亮话，也不太喜欢拖泥带水。你表达关心的方式，往往不是说很多，而是直接做给你看。",
+        strength: "你行动力强，判断果断，关键时刻很靠得住。你对重要的人非常在意，只是常常嘴硬。",
+        weakness: "有时因为说话太直接，容易让人误会你的本意。",
+        partner: "适合和细腻、耐心、愿意读懂你沉默的人同行。对方会明白，你的锋利很多时候只是保护色。",
+        share: "你不是不温柔，只是温柔都藏在行动里。"
+      },
+      sound: {
+        name: "音柱型人格",
+        keywords: "自信 · 张扬 · 审美在线 · 生命力强",
+        desc: "你在鬼灭世界里，是那种存在感很强、很懂得展现自己魅力的人。你不喜欢平庸，也不喜欢被埋没。你热爱生活，也很在意体验感，喜欢把日子过得有声有色。",
+        strength: "你很有个人风格，也很会带动气氛。你懂得欣赏美，也懂得让自己发光。",
+        weakness: "有时会有点在意面子，或者不太愿意暴露脆弱的一面。",
+        partner: "适合和真诚、不扫兴、能欣赏你闪光点的人同行。你不需要被压制光芒，只需要被好好接住。",
+        share: "你天生耀眼，不必为了合群而变暗。"
+      },
+      snake: {
+        name: "蛇柱型人格",
+        keywords: "敏锐 · 专一 · 戒备感 · 深情但不轻易信任",
+        desc: "你在鬼灭世界里，是那种外表带刺、内心其实很专一的人。你不太容易相信别人，也不会随便交付真心。但一旦认定了某个人或某件事，你就会非常坚定，甚至带着一点固执。",
+        strength: "你洞察力很强，也很忠诚。你不会轻易被表面迷惑，对重要的人非常认真。",
+        weakness: "有时会因为太防备，而错过一些本可以靠近你的人。",
+        partner: "适合和稳定、真诚、愿意一点点给你安全感的人同行。你不需要被热烈追逐，只需要被长期坚定地对待。",
+        share: "你不是难接近，只是很认真地保护自己的真心。"
+      }
+    };
+
+    let currentQuestion = 0;
+    let totalScores = {};
+
+    function initScores() {
+      totalScores = {
+        water: 0,
+        flame: 0,
+        insect: 0,
+        mist: 0,
+        love: 0,
+        wind: 0,
+        sound: 0,
+        snake: 0
+      };
+    }
+
+    function showPage(id) {
+      document.getElementById("cover").classList.add("hidden");
+      document.getElementById("quiz").classList.add("hidden");
+      document.getElementById("result").classList.add("hidden");
+      document.getElementById(id).classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function startQuiz() {
+      initScores();
+      currentQuestion = 0;
+      showPage("quiz");
+      renderQuestion();
+    }
+
+    function restartQuiz() {
+      startQuiz();
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("questionTitle").textContent = q.title;
+
+      const percent = Math.round(((currentQuestion + 1) / questions.length) * 100);
+      document.getElementById("progressLabel").textContent = `第 ${currentQuestion + 1}/${questions.length} 题`;
+      document.getElementById("progressPercent").textContent = `${percent}%`;
+      document.getElementById("progressBar").style.width = `${percent}%`;
+
+      const box = document.getElementById("optionsBox");
+      box.innerHTML = "";
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = opt.text;
+        btn.onclick = () => selectOption(index, btn);
+        box.appendChild(btn);
+      });
+    }
+
+    function selectOption(index, btn) {
+      const options = document.querySelectorAll(".option");
+      options.forEach(o => o.classList.remove("selected"));
+      btn.classList.add("selected");
+
+      const selectedScores = questions[currentQuestion].options[index].scores;
+      for (let key in selectedScores) {
+        totalScores[key] += selectedScores[key];
+      }
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          renderQuestion();
+        } else {
+          showResult();
+        }
+      }, 220);
+    }
+
+    function getTopResult() {
+      let topKey = "water";
+      let topValue = -1;
+      for (let key in totalScores) {
+        if (totalScores[key] > topValue) {
+          topValue = totalScores[key];
+          topKey = key;
+        }
+      }
+      return topKey;
+    }
+
+    function showResult() {
+      const key = getTopResult();
+      const r = results[key];
+
+      document.getElementById("resultName").textContent = r.name;
+      document.getElementById("resultKeywords").textContent = r.keywords;
+      document.getElementById("resultDesc").textContent = r.desc;
+      document.getElementById("resultStrength").textContent = r.strength;
+      document.getElementById("resultWeakness").textContent = r.weakness;
+      document.getElementById("resultPartner").textContent = r.partner;
+      document.getElementById("shareLine").textContent = `“${r.share}”`;
+
+      showPage("result");
+    }
+
+    function copyResult() {
+      const text = `
+测测你的本命柱｜我的结果是：${document.getElementById("resultName").textContent}
+关键词：${document.getElementById("resultKeywords").textContent}
+
+${document.getElementById("resultDesc").textContent}
+
+优势：${document.getElementById("resultStrength").textContent}
+小缺点：${document.getElementById("resultWeakness").textContent}
+适合并肩作战的人：${document.getElementById("resultPartner").textContent}
+
+${document.getElementById("shareLine").textContent}
+      `.trim();
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert("结果已复制，快去分享吧！");
+      }).catch(() => {
+        alert("复制失败，请手动截图分享。");
+      });
+    }
+  </script>
+</body>
+</html>
